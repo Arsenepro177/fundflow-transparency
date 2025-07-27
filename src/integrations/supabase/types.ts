@@ -14,7 +14,246 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      donations: {
+        Row: {
+          amount: number
+          created_at: string
+          donor_id: string
+          id: number
+          project_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          donor_id: string
+          id?: number
+          project_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          donor_id?: string
+          id?: number
+          project_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "donations_donor_id_fkey"
+            columns: ["donor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "donations_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ledger: {
+        Row: {
+          details: Json
+          event_type: string
+          id: number
+          timestamp: string
+        }
+        Insert: {
+          details: Json
+          event_type: string
+          id?: number
+          timestamp?: string
+        }
+        Update: {
+          details?: Json
+          event_type?: string
+          id?: number
+          timestamp?: string
+        }
+        Relationships: []
+      }
+      milestones: {
+        Row: {
+          amount_needed: number
+          created_at: string
+          id: string
+          project_id: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          amount_needed: number
+          created_at?: string
+          id?: string
+          project_id: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          amount_needed?: number
+          created_at?: string
+          id?: string
+          project_id?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "milestones_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          phone: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          phone?: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          phone?: string | null
+          role?: Database["public"]["Enums"]["app_role"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      projects: {
+        Row: {
+          created_at: string
+          description: string
+          funding_goal: number
+          funds_raised: number
+          id: string
+          ngo_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          funding_goal: number
+          funds_raised?: number
+          id?: string
+          ngo_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          funding_goal?: number
+          funds_raised?: number
+          id?: string
+          ngo_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "projects_ngo_id_fkey"
+            columns: ["ngo_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      proofs: {
+        Row: {
+          created_at: string
+          geotag: string | null
+          id: string
+          milestone_id: string
+          proof_url: string
+        }
+        Insert: {
+          created_at?: string
+          geotag?: string | null
+          id?: string
+          milestone_id: string
+          proof_url: string
+        }
+        Update: {
+          created_at?: string
+          geotag?: string | null
+          id?: string
+          milestone_id?: string
+          proof_url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "proofs_milestone_id_fkey"
+            columns: ["milestone_id"]
+            isOneToOne: false
+            referencedRelation: "milestones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      validations: {
+        Row: {
+          created_at: string
+          id: number
+          is_valid: boolean
+          milestone_id: string
+          validator_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          is_valid: boolean
+          milestone_id: string
+          validator_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          is_valid?: boolean
+          milestone_id?: string
+          validator_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "validations_milestone_id_fkey"
+            columns: ["milestone_id"]
+            isOneToOne: false
+            referencedRelation: "milestones"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "validations_validator_id_fkey"
+            columns: ["validator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +262,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      app_role: "ngo" | "donor" | "validator"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +389,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["ngo", "donor", "validator"],
+    },
   },
 } as const
