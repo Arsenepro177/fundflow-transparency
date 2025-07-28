@@ -337,8 +337,9 @@ const AuthPage: React.FC = () => {
       <p className="text-center text-xs text-muted-foreground mt-6 animate-fade-in" style={{animationDelay: '0.3s'}}>
         Join 10,000+ users making transparent impact worldwide
       </p>
+        </div>
+      </div>
     </div>
-  </div>
   );
 };
 
